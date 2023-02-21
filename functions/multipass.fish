@@ -13,7 +13,7 @@ function multipass
             set __public_key (cat ~/.ssh/id_rsa.pub)
             set __instance_name $argv[2]
             multipass exec $__instance_name -- bash -c "echo $__public_key >> ~/.ssh/authorized_keys"
-            multipass exec $__instance_name -- sudo apt update
+            multipass exec $__instance_name -- sudo DEBIAN_FRONTEND=noninteractive apt update
             multipass exec $__instance_name -- sudo DEBIAN_FRONTEND=noninteractive apt install avahi-daemon -y
             echo -e "\n\nSSH key added to $__instance_name, can now connect to it using:\nssh ubuntu@$__instance_name.local"
         # custom command to upgrade multipass instances, just upgrade the selected instance and stop it
@@ -21,18 +21,20 @@ function multipass
             set __instance_name $argv[2]
             # get the state of the instance, if it's running, leave it running, otherwise start it and return it to the original state
             set __instance_state (multipass info $__instance_name | grep State | awk '{print $2}')
-            switch $__instance_state
-                case "Running"
-                    __upgrade_instance $__instance_name\
-                case "Stopped"
-                    multipass start $__instance_name
-                    __upgrade_instance $__instance_name
-                    multipass stop $__instance_name
-                case "Suspended"
-                    multipass start $__instance_name
-                    __upgrade_instance $__instance_name
-                    multipass suspend $__instance_name
+            if test $__instance_state = "Running"
+                __upgrade_instance $__instance_name
+            else if test $__instance_state = "Stopped"
+                multipass start $__instance_name
+                __upgrade_instance $__instance_name
+                multipass stop $__instance_name
+            else if test $__instance_state = "Suspended"
+                multipass start $__instance_name
+                __upgrade_instance $__instance_name
+                multipass suspend $__instance_name
+            else
+                echo "Unknown instance state: $__instance_state"
             end
+            echo "Instance $__instance_name upgraded"
         # Execute the default "multipass" command with the provided arguments
         case '*'
             command multipass $argv
@@ -45,7 +47,7 @@ end
 # stop the instance
 function __upgrade_instance -d "Upgrade the selected instance"
     set __instance_name $argv[1]
-    multipass exec $__instance_name -- sudo apt update
+    multipass exec $__instance_name -- sudo DEBIAN_FRONTEND=noninteractive apt update
     multipass exec $__instance_name -- sudo DEBIAN_FRONTEND=noninteractive apt upgrade -y
     multipass stop $__instance_name
 end
