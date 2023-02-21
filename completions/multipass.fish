@@ -1,21 +1,22 @@
-# function for checking if the current command is a subcommand
-function __fish_use_subcommand
-    test (count (commandline -poc)) -eq 1
-end
-
-# function for listing multipass instance names using the json format
-function __fish_list_multipass_instance_names
-    multipass list --format=json | jq -r '.list[].name'
-end
-
-
-
 # complete command
 complete -c multipass -f
 
-# custom status command
+#
+# custom commands
+#
+# status command
 complete -c multipass -n "__fish_use_subcommand" -f -a "status" -d 'Display status of instances'
+# add-ssh command
+complete -c multipass -n "__fish_use_subcommand" -f -a "add-ssh" -d "Add the current user's SSH key to the instance"
+complete -c multipass -n "__fish_seen_subcommand_from add-ssh" -a "(__fish_list_multipass_instance_names)"
+# upgrade command
+complete -c multipass -n "__fish_use_subcommand" -f -a "upgrade" -d 'Upgrade the packages on instance'
+complete -c multipass -n "__fish_seen_subcommand_from upgrade" -a "(__fish_list_multipass_instance_names)"
 
+
+#
+# default commands
+#
 # alias command
 complete -c multipass -n "__fish_use_subcommand" -f -a "alias" -d 'Create an alias'
 complete -c multipass -n "__fish_seen_subcommand_from alias" -d ' Name of the alias to create' -r
