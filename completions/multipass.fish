@@ -123,7 +123,7 @@ complete -c multipass -n "__multipass_fish_use_subcommand" -f -a "start" -d 'Sta
 complete -c multipass -n "__fish_seen_subcommand_from start" -s h -l help -d "Display help"
 complete -c multipass -n "__fish_seen_subcommand_from start" -s v -l verbose -d "Increase logging verbosity. Repeat the 'v' in the short option for more detail. Maximum verbosity is obtained with 4 (or more) v's, i.e. -vvvv."
 complete -c multipass -n "__fish_seen_subcommand_from start" -l all -d "Start all instances"
-complete -c multipass -n "__fish_seen_subcommand_from start" -a "(__multipass_list_instance_names)"
+complete -c multipass -n "__fish_seen_subcommand_from start" -a "(__multipass_list_stopped_or_suspended)" # CASE: list only stopped or running instances
 # stop command
 complete -c multipass -n "__multipass_fish_use_subcommand" -f -a "stop" -d 'Stop running instances'
 complete -c multipass -n "__fish_seen_subcommand_from stop" -s h -l help -d "Display help"
@@ -131,13 +131,13 @@ complete -c multipass -n "__fish_seen_subcommand_from stop" -s v -l verbose -d "
 complete -c multipass -n "__fish_seen_subcommand_from stop" -l all -d "Stop all instances"
 complete -c multipass -n "__fish_seen_subcommand_from stop" -s t -l time -d "Time from now, in minutes, to delay shutdown of the instance"
 complete -c multipass -n "__fish_seen_subcommand_from stop" -s c -l cancel -d "Cancel a pending delayed shutdown"
-complete -c multipass -n "__fish_seen_subcommand_from stop" -a "(__multipass_list_instance_names)"
+complete -c multipass -n "__fish_seen_subcommand_from stop" -a "(__multipass_list_running)" # CASE: list only running instances
 # suspend command
 complete -c multipass -n "__multipass_fish_use_subcommand" -f -a "suspend" -d 'Suspend running instances'
 complete -c multipass -n "__fish_seen_subcommand_from suspend" -s h -l help -d "Display help"
 complete -c multipass -n "__fish_seen_subcommand_from suspend" -s v -l verbose -d "Increase logging verbosity. Repeat the 'v' in the short option for more detail. Maximum verbosity is obtained with 4 (or more) v's, i.e. -vvvv."
 complete -c multipass -n "__fish_seen_subcommand_from suspend" -l all -d "Suspend all instances"
-complete -c multipass -n "__fish_seen_subcommand_from suspend" -a "(__multipass_list_instance_names)"
+complete -c multipass -n "__fish_seen_subcommand_from suspend" -a "(__multipass_list_running)" # CASE: list only running instances
 # transfer command
 complete -c multipass -n "__multipass_fish_use_subcommand" -f -a "transfer" -d 'Transfer files between the host and instances'
 complete -c multipass -n "__fish_seen_subcommand_from transfer" -s h -l help -d "Display help"
